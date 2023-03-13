@@ -27,40 +27,6 @@ local ThreadPool = {}
 ThreadPool.__index = ThreadPool
 
 --[=[
-    @prop _openThreads { thread? }
-    @within ThreadPool
-    @private
-    @tag Internal Use Only
-    
-    References to open threads.
-]=]
-ThreadPool._openThreads = {}
-
---[=[
-    @prop _threadCount number
-    @within ThreadPool
-    @private
-    @readonly
-    @tag Internal Use Only
-    
-    The amount of threads to cache.
-    
-    Negative numbers will enable Dynamic Caching, the Absolute Value of the property will always represent the minimum amount of threads that will be kept open.
-]=]
-ThreadPool._threadCount = 1
-
---[=[
-    @prop _cachedThreadLifetime number
-    @within ThreadPool
-    @private
-    @readonly
-    @tag Internal Use Only
-    
-    The amount of seconds a thread will be kept alive after going idle.
-]=]
-ThreadPool._cachedThreadLifetime = 60
-
---[=[
     @method _call
     @within ThreadPool
     @private
@@ -97,28 +63,26 @@ end
 ]=]
 function ThreadPool:_createThread()
 	local closeThread = false
-	local index = #self._openThreads + 1
 
 	-- Create new thread and add it to the openThreads table
 	local newThread: thread | nil
 	newThread = coroutine.create(function()
-		local lifetime = 0
-
 		while not closeThread do
-			local currentTick = os.clock()
 			self:_call(coroutine.yield())
-
-			-- Track lifetime
-			lifetime += os.clock() - currentTick
-
-			-- Implement cachedThreadLifetime
-			if lifetime >= self._cachedThreadLifetime then
-				closeThread = true
-				newThread = nil
-				self._openThreads[index] = nil
-			end
 		end
 	end)
+
+	-- Implement Lifetime
+	if #self._openThreads > self._threadCount then
+		local index = #self._openThreads + 1
+
+		task.delay(self._cachedThreadLifetime, function()
+			closeThread = true
+			newThread = nil
+			self._openThreads[index] = nil
+		end)
+	end
+
 	coroutine.resume(newThread :: thread)
 
 	table.insert(self._openThreads, newThread)
@@ -165,9 +129,39 @@ function ThreadPool.new(threadCount: number?, cachedThreadLifetime: number?)
 	local self = {}
 	setmetatable(self, ThreadPool)
 
-	-- Apply properties
-	self._threadCount = threadCount or self._threadCount
-	self._cachedThreadLifetime = cachedThreadLifetime or self._cachedThreadLifetime
+	--[=[
+	    @prop _openThreads { thread? }
+	    @within ThreadPool
+	    @private
+	    @tag Internal Use Only
+	    
+	    References to open threads.
+	]=]
+	self._openThreads = {}
+
+	--[=[
+	    @prop _threadCount number
+	    @within ThreadPool
+	    @private
+	    @readonly
+	    @tag Internal Use Only
+	    
+	    The amount of threads to cache.
+	    
+	    Negative numbers will enable Dynamic Caching, the Absolute Value of the property will always represent the minimum amount of threads that will be kept open.
+	]=]
+	self._threadCount = threadCount or 1
+
+	--[=[
+	    @prop _cachedThreadLifetime number
+	    @within ThreadPool
+	    @private
+	    @readonly
+	    @tag Internal Use Only
+	    
+	    The amount of seconds a thread will be kept alive after going idle.
+	]=]
+	self._cachedThreadLifetime = cachedThreadLifetime or 60 :: number?
 
 	-- Create initial new threads
 	for n = 1, math.abs(self._threadCount), 1 do
