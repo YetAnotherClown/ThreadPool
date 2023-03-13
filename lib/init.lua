@@ -1,7 +1,7 @@
 --!strict
 
 --[[
-    Thread Pool     1.0.0-beta
+    Thread Pool     1.0.0-beta2
     A library for creating Thread Pools to improve performance and reduce latency.
 
     https://clownxz.github.io/ThreadPool/
