@@ -105,7 +105,6 @@ function ThreadPool:spawn<T...>(callback: (T...) -> nil, ...: T...)
 	end
 
 	coroutine.resume(self._openThreads[#self._openThreads], callback, ...)
-	self._openThreads[#self._openThreads] = nil
 end
 
 --[=[
