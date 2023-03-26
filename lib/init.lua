@@ -52,6 +52,26 @@ function ThreadPool:_call<T...>(callback: (T...) -> nil, ...: T...)
 end
 
 --[=[
+    @method _yield
+    @within ThreadPool
+    @private
+    @tag Internal Use Only
+    
+    An Internal Function for use when creating a new thread.
+    
+    @param closingReference boolean
+    
+    @return void
+]=]
+function ThreadPool:_yield(closeThread: boolean): nil
+	while not closeThread do
+		self:_call(coroutine.yield())
+	end
+
+	return
+end
+
+--[=[
     @method _createThread
     @within ThreadPool
     @private
@@ -66,11 +86,7 @@ function ThreadPool:_createThread()
 
 	-- Create new thread and add it to the openThreads table
 	local newThread: thread | nil
-	newThread = coroutine.create(function()
-		while not closeThread do
-			self:_call(coroutine.yield())
-		end
-	end)
+	newThread = coroutine.create(self._yield)
 
 	-- Implement Lifetime
 	if #self._openThreads > self._threadCount then
@@ -83,7 +99,7 @@ function ThreadPool:_createThread()
 		end)
 	end
 
-	coroutine.resume(newThread :: thread)
+	coroutine.resume(newThread :: thread, closeThread)
 
 	table.insert(self._openThreads, newThread)
 end
