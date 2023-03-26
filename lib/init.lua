@@ -165,7 +165,7 @@ function ThreadPool.new(threadCount: number?, cachedThreadLifetime: number?)
 	    
 	    Negative numbers will enable Dynamic Caching, the Absolute Value of the property will always represent the minimum amount of threads that will be kept open.
 	]=]
-	self._threadCount = threadCount or 1
+	self._threadCount = threadCount or 10
 
 	--[=[
 	    @prop _cachedThreadLifetime number
