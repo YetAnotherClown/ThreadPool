@@ -10,12 +10,12 @@
 --[=[
     @class ThreadPool
     
-    Recyles threads instead of creating a new thread everytime you want to run your code in a thread.
+    Recycles threads instead of creating a new thread every time you want to run your code in a thread.
     
     **Usage**
     
     ```lua
-        local ThreadPool = Require(path.to.module)
+        local ThreadPool = Require(ReplicatedStorage.Packages.ThreadPool)
         
         local myThreadPool = ThreadPool.new()
         myThreadPool:spawn(function(...)
