@@ -1,0 +1,10 @@
+[package]
+name = "clownxz/threadpool"
+description = "A library for creating Thread Pools to improve performance and reduce latency."
+version = "1.0.0"
+license = "MIT"
+authors = ["Clownxz"]
+realm = "shared"
+registry = "https://github.com/upliftgames/wally-index"
+exclude = ["**"]
+include = ["lib", "lib/*", "default.project.json", "wally.toml", "wally.lock"]
