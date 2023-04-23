@@ -14,7 +14,7 @@ You shouldn't need to, unless you are creating multiple threads at a given time.
 
 #### Usage
 ```lua
-local ThreadPool = Require(path.to.module)
+local ThreadPool = Require(ReplicatedStorage.Packages.ThreadPool)
 
 local myThreadPool = ThreadPool.new()
 
@@ -24,6 +24,14 @@ end, "Hello, world!")
 ```
 
 ---
+
+#### Installing
+
+Within your ``wally.toml`` file:
+```toml
+[dependences]
+ThreadPool = "clownxz/threadpool@1.0.0"
+```
 
 #### Building with Rojo
 

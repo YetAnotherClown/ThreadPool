@@ -1,7 +1,7 @@
 --!strict
 
 --[[
-    Thread Pool     1.0.0-beta3
+    Thread Pool     1.0.0
     A library for creating Thread Pools to improve performance and reduce latency.
 
     https://clownxz.github.io/ThreadPool/
@@ -82,8 +82,6 @@ end
     @return void
 ]=]
 function ThreadPool:_createThread()
-	local closeThread = false
-
 	-- Create new thread and add it to the openThreads table
 	local newThread: thread | nil
 	newThread = coroutine.create(self._yield)
@@ -93,13 +91,12 @@ function ThreadPool:_createThread()
 		local index = #self._openThreads + 1
 
 		task.delay(self._cachedThreadLifetime, function()
-			closeThread = true
 			newThread = nil
 			self._openThreads[index] = nil
 		end)
 	end
 
-	coroutine.resume(newThread :: thread, closeThread)
+	coroutine.resume(newThread :: thread, self)
 
 	table.insert(self._openThreads, newThread)
 end
