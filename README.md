@@ -1,6 +1,6 @@
 # ThreadPool
 
-<a href="https://clownxz.github.io/ThreadPool/"><strong>View docs</strong></a>
+<a href="https://yetanotherclown.github.io/ThreadPool/"><strong>View docs</strong></a>
 
 A library for creating Thread Pools to improve performance and reduce latency.
 
@@ -30,7 +30,7 @@ end, "Hello, world!")
 Within your ``wally.toml`` file:
 ```toml
 [dependences]
-ThreadPool = "clownxz/threadpool@1.0.0"
+ThreadPool = "yetanotherclown/threadpool@1.0.0"
 ```
 
 #### Building with Rojo
