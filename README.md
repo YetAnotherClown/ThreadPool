@@ -4,6 +4,12 @@
 
 A library for creating Thread Pools to improve performance and reduce latency.
 
+> [!WARNING]
+> ThreadPool is **archived**, but is it fully complete. There are no features to add, no known bugs for years, etc.
+> It's still recommended to use, but I will no longer be maintaining it, not that it has needed any maintenance.
+>
+> If there is something you want to add, fix, etc. you may fork it, make your changes, and distribute it however you wish.
+
 ---
 
 #### Thread Pooling
